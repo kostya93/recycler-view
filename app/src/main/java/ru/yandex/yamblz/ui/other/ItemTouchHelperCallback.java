@@ -2,6 +2,7 @@ package ru.yandex.yamblz.ui.other;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 /**
  * Created by kostya on 30.07.16.
@@ -9,9 +10,12 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 
 public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
     private final ItemTouchHelperAdapter mAdapter;
+    private LastMovedDecoration lastMovedDecoration;
+    private boolean isMoving = false;
 
-    public ItemTouchHelperCallback(ItemTouchHelperAdapter mAdapter) {
+    public ItemTouchHelperCallback(ItemTouchHelperAdapter mAdapter, LastMovedDecoration lastMovedDecoration) {
         this.mAdapter = mAdapter;
+        this.lastMovedDecoration = lastMovedDecoration;
     }
 
     @Override
@@ -24,7 +28,13 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-        mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        int lastMovedFirst = viewHolder.getAdapterPosition();
+        int lastMovedSecond = target.getAdapterPosition();
+
+        lastMovedDecoration.setLastMovedFirst(lastMovedFirst);
+        lastMovedDecoration.setLastMovedSecond(lastMovedSecond);
+
+        mAdapter.onItemMove(lastMovedFirst, lastMovedSecond);
         return true;
     }
 
@@ -33,13 +43,17 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
         mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
     }
 
+
     @Override
     public boolean isItemViewSwipeEnabled() {
+        Log.d("isItemViewSwipeEnabled", "isItemViewSwipeEnabled");
         return true;
     }
 
     @Override
     public boolean isLongPressDragEnabled() {
+        Log.d("isLongPressDragEnabled", "isLongPressDragEnabled");
         return true;
     }
+
 }

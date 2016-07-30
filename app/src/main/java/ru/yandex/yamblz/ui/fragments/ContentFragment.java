@@ -25,6 +25,7 @@ import java.util.List;
 import butterknife.BindView;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.other.ItemTouchHelperCallback;
+import ru.yandex.yamblz.ui.other.LastMovedDecoration;
 import ru.yandex.yamblz.ui.other.ListItemDecoration;
 
 public class ContentFragment extends BaseFragment {
@@ -91,8 +92,9 @@ public class ContentFragment extends BaseFragment {
         rv.setLayoutManager(gridLayoutManager);
         ContentAdapter adapter = new ContentAdapter();
         rv.setAdapter(adapter);
-        //rv.setHasFixedSize(false);
-        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
+        LastMovedDecoration lastMovedDecoration = new LastMovedDecoration();
+        rv.addItemDecoration(lastMovedDecoration);
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter, lastMovedDecoration);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(rv);
     }

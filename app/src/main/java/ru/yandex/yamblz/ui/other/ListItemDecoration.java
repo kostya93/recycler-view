@@ -18,7 +18,7 @@ public class ListItemDecoration extends RecyclerView.ItemDecoration {
         paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(20);
+        paint.setStrokeWidth(10);
     }
 
     @Override
@@ -29,10 +29,10 @@ public class ListItemDecoration extends RecyclerView.ItemDecoration {
             final View child = parent.getChildAt(i);
             int adapterPos = parent.getChildAdapterPosition(child);
             if (adapterPos % 2 == 0) {
-                c.drawRect(layoutManager.getDecoratedLeft(child) + 10,
-                           layoutManager.getDecoratedTop(child) + 10,
-                           layoutManager.getDecoratedRight(child) - 10,
-                           layoutManager.getDecoratedBottom(child) - 10,
+                c.drawRect(layoutManager.getDecoratedLeft(child) + 5,
+                           layoutManager.getDecoratedTop(child) + 5,
+                           layoutManager.getDecoratedRight(child) - 5,
+                           layoutManager.getDecoratedBottom(child) - 5,
                            paint);
             }
         }
