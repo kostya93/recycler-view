@@ -1,5 +1,8 @@
 package ru.yandex.yamblz.ui.fragments;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +25,7 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentHolder> 
 
     @Override
     public ContentHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ContentHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item, parent, false));
+        return new ContentHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item, parent, false), this);
     }
 
     @Override
@@ -57,14 +60,34 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentHolder> 
         notifyItemRemoved(position);
     }
 
+    private Integer changeColor(int pos) {
+        colors.set(pos, Color.rgb(rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255)));
+        return colors.get(pos);
+    }
+
+    private Integer getColorByPos(int pos) {
+        return colors.get(pos);
+    }
+
     static class ContentHolder extends RecyclerView.ViewHolder {
-        ContentHolder(View itemView) {
+
+        ContentHolder(View itemView, ContentAdapter contentAdapter) {
             super(itemView);
+            itemView.setOnClickListener(view -> {
+                int from = contentAdapter.getColorByPos(getAdapterPosition());
+                int to = contentAdapter.changeColor(getAdapterPosition());
+                ObjectAnimator.ofObject(itemView, "backgroundColor", new ArgbEvaluator(), from, to)
+                        .setDuration(1000)
+                        .start();
+                ((TextView) itemView).setText("#".concat(Integer.toHexString(to).substring(2)));
+            });
         }
 
         void bind(Integer color) {
             itemView.setBackgroundColor(color);
             ((TextView) itemView).setText("#".concat(Integer.toHexString(color).substring(2)));
         }
+
+
     }
 }
