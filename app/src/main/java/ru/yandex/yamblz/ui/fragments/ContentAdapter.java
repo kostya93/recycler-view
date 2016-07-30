@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,13 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentHolder> 
     private final Random rnd = new Random();
     private final List<Integer> colors = new ArrayList<>();
 
+    public ContentAdapter() {
+        super();
+        setHasStableIds(true);
+    }
+
+
+
     @Override
     public ContentHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ContentHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.content_item, parent, false), this);
@@ -31,6 +39,11 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentHolder> 
     @Override
     public void onBindViewHolder(ContentHolder holder, int position) {
         holder.bind(createColorForPosition(position));
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return createColorForPosition(position);
     }
 
     @Override
@@ -69,8 +82,9 @@ class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentHolder> 
         return colors.get(pos);
     }
 
-    static class ContentHolder extends RecyclerView.ViewHolder {
 
+
+    static class ContentHolder extends RecyclerView.ViewHolder {
         ContentHolder(View itemView, ContentAdapter contentAdapter) {
             super(itemView);
             itemView.setOnClickListener(view -> {

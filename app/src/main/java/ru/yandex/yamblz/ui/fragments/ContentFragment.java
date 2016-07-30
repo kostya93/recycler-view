@@ -16,15 +16,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import ru.yandex.yamblz.R;
 import ru.yandex.yamblz.ui.other.ItemTouchHelperCallback;
+import ru.yandex.yamblz.ui.other.ListItemDecoration;
 
 public class ContentFragment extends BaseFragment {
 
     private ItemTouchHelper mItemTouchHelper;
     private GridLayoutManager gridLayoutManager;
+    private ListItemDecoration listItemDecoration;
+    private boolean isBordered = false;
     private int spanCount = 1;
 
     @BindView(R.id.rv)
@@ -49,12 +57,22 @@ public class ContentFragment extends BaseFragment {
                 spanCount = Math.min(30, spanCount + 1);
                 gridLayoutManager.setSpanCount(spanCount);
                 rv.getAdapter().notifyDataSetChanged();
+                Toast.makeText(getContext(), "spanCount = " + spanCount, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.less_columns:
                 spanCount = Math.max(1, spanCount - 1);
                 gridLayoutManager.setSpanCount(spanCount);
                 rv.getAdapter().notifyDataSetChanged();
+                Toast.makeText(getContext(), "spanCount = " + spanCount, Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.border:
+                if (isBordered) {
+                    rv.removeItemDecoration(listItemDecoration);
+                } else {
+                    rv.addItemDecoration(listItemDecoration);
+                }
+                rv.getAdapter().notifyDataSetChanged();
+                isBordered = !isBordered;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -68,10 +86,12 @@ public class ContentFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        listItemDecoration = new ListItemDecoration();
         gridLayoutManager = new GridLayoutManager(getContext(), spanCount);
         rv.setLayoutManager(gridLayoutManager);
         ContentAdapter adapter = new ContentAdapter();
         rv.setAdapter(adapter);
+        //rv.setHasFixedSize(false);
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(rv);
